@@ -41,9 +41,10 @@ function BadgerLoginScreen(props) {
                             "Your pin is a 7-digit number!",
                         );
                     } else {
-                        props.handleLogin(username, pin);
-                        // setUsername("");
-                        // setPin("");
+                        props.handleLogin(username, pin).then(() => {
+                            setUsername("");
+                            setPin("");
+                        });
                     }
                 }}
             />

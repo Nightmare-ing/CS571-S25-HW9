@@ -22,8 +22,8 @@ export default function App() {
         setChatrooms(["Hello", "World"]); // for example purposes only!
     }, []);
 
-    function handleLogin(username, pin) {
-        const data = fetch("https://cs571.org/rest/s25/hw9/login", {
+    async function handleLogin(username, pin) {
+        const data = await fetch("https://cs571.org/rest/s25/hw9/login", {
             method: "POST",
             headers: {
                 "X-CS571-ID": CS571.getBadgerId(),
@@ -33,29 +33,26 @@ export default function App() {
                 username: username,
                 pin: pin,
             }),
-        })
-            .then((res) => {
-                if (res.status === 401) {
-                    Alert.alert("Login Error", "Incorrect username or pin");
-                    return null;
-                } else if (res.status === 200) {
-                    return res.json();
-                } else {
-                    Alert.alert("Internal Error", "Something went wrong!");
-                    return null;
-                }
-            })
-            .then(async (data) => {
-                if (data) {
-                    try {
-                        await SecureStore.setItemAsync(username, data.token);
-                        Alert.alert("DEBUG", "Login successfully!");
-                        setIsLoggedIn(true); // I should really do a fetch to login first!
-                    } catch (e) {
-                        console.log(e);
-                    }
-                }
-            });
+        }).then((res) => {
+            if (res.status === 401) {
+                Alert.alert("Login Error", "Incorrect username or pin");
+                return null;
+            } else if (res.status === 200) {
+                Alert.alert("Login", "Login Successfully!");
+                return res.json();
+            } else {
+                Alert.alert("Internal Error", "Something went wrong!");
+                return null;
+            }
+        });
+        if (data) {
+            try {
+                await SecureStore.setItemAsync(username, data.token);
+                setIsLoggedIn(true); // I should really do a fetch to login first!
+            } catch (e) {
+                Alert.alert("Internal Error", e);
+            }
+        }
     }
 
     function handleSignup(username, pin) {
