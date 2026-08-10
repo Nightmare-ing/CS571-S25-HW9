@@ -30,11 +30,21 @@ function BadgerLoginScreen(props) {
                 color="crimson"
                 title="Login"
                 onPress={() => {
-                    Alert.alert(
-                        "Hmmm...",
-                        "I should check the user's credentials!",
-                    );
-                    props.handleLogin(username, pin);
+                    if (username === "" || pin === "") {
+                        Alert.alert(
+                            "Login Error",
+                            "You must provide both a name and a pin!",
+                        );
+                    } else if (!/^\d{7}$/.test(pin)) {
+                        Alert.alert(
+                            "Login Error",
+                            "Your pin is a 7-digit number!",
+                        );
+                    } else {
+                        props.handleLogin(username, pin);
+                        // setUsername("");
+                        // setPin("");
+                    }
                 }}
             />
             <Button
