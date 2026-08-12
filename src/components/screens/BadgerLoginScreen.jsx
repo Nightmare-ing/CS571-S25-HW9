@@ -26,33 +26,36 @@ function BadgerLoginScreen(props) {
                 secureTextEntry={true}
                 onChangeText={setPin}
             />
-            <Button
-                color="crimson"
-                title="Login"
-                onPress={() => {
-                    if (username === "" || pin === "") {
-                        Alert.alert(
-                            "Login Error",
-                            "You must provide both a name and a pin!",
-                        );
-                    } else if (!/^\d{7}$/.test(pin)) {
-                        Alert.alert(
-                            "Login Error",
-                            "Your pin is a 7-digit number!",
-                        );
-                    } else {
-                        props.handleLogin(username, pin).then(() => {
-                            setUsername("");
-                            setPin("");
-                        });
-                    }
-                }}
-            />
-            <Button
-                color="grey"
-                title="Signup"
-                onPress={() => props.setIsRegistering(true)}
-            />
+            <View style={styles.buttons}>
+                <Button
+                    style={{ padding: 36 }}
+                    color="crimson"
+                    title="Login"
+                    onPress={() => {
+                        if (username === "" || pin === "") {
+                            Alert.alert(
+                                "Login Error",
+                                "You must provide both a name and a pin!",
+                            );
+                        } else if (!/^\d{7}$/.test(pin)) {
+                            Alert.alert(
+                                "Login Error",
+                                "Your pin is a 7-digit number!",
+                            );
+                        } else {
+                            props.handleLogin(username, pin).then(() => {
+                                setUsername("");
+                                setPin("");
+                            });
+                        }
+                    }}
+                />
+                <Button
+                    color="grey"
+                    title="Signup"
+                    onPress={() => props.setIsRegistering(true)}
+                />
+            </View>
         </View>
     );
 }
@@ -75,6 +78,13 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 16,
         fontWeight: "bold",
+    },
+    buttons: {
+        width: "70%",
+        paddingTop: 24,
+        paddingHorizontal: "10%",
+        flexDirection: "row",
+        justifyContent: "space-between",
     },
 });
 
