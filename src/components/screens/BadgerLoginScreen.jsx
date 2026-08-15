@@ -1,62 +1,82 @@
 import { useState } from "react";
-import { Alert, Button, StyleSheet, Text, View, TextInput } from "react-native";
+import {
+    Alert,
+    Button,
+    StyleSheet,
+    Text,
+    View,
+    TextInput,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 function BadgerLoginScreen(props) {
     const [username, setUsername] = useState("");
     const [pin, setPin] = useState("");
 
     return (
-        <View style={styles.container}>
-            <Text style={{ fontSize: 36, paddingBottom: 36 }}>
-                BadgerChat Login
-            </Text>
-            <Text style={styles.label}>Username</Text>
-            <TextInput
-                style={styles.input}
-                value={username}
-                autoCapitalize="none"
-                autoCorrect={false}
-                onChangeText={setUsername}
-            />
-            <Text style={styles.label}>PIN</Text>
-            <TextInput
-                style={styles.input}
-                value={pin}
-                keyboardType="number-pad"
-                secureTextEntry={true}
-                onChangeText={setPin}
-            />
-            <View style={styles.buttons}>
-                <Button
-                    style={{ padding: 36 }}
-                    color="crimson"
-                    title="Login"
-                    onPress={() => {
-                        if (username === "" || pin === "") {
-                            Alert.alert(
-                                "Login Error",
-                                "You must provide both a name and a pin!",
-                            );
-                        } else if (!/^\d{7}$/.test(pin)) {
-                            Alert.alert(
-                                "Login Error",
-                                "Your pin is a 7-digit number!",
-                            );
-                        } else {
-                            props.handleLogin(username, pin).then(() => {
-                                setUsername("");
-                                setPin("");
-                            });
-                        }
-                    }}
-                />
-                <Button
-                    color="grey"
-                    title="Signup"
-                    onPress={() => props.setIsRegistering(true)}
-                />
-            </View>
-        </View>
+        <SafeAreaView style={{ flex: 1 }}>
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
+                <ScrollView contentContainerStyle={styles.scrollContentStyle}>
+                    <Text style={{ fontSize: 36, paddingBottom: 36 }}>
+                        BadgerChat Login
+                    </Text>
+                    <Text style={styles.label}>Username</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={username}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        onChangeText={setUsername}
+                    />
+                    <Text style={styles.label}>PIN</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={pin}
+                        keyboardType="number-pad"
+                        secureTextEntry={true}
+                        onChangeText={setPin}
+                    />
+                    <View style={styles.buttons}>
+                        <Button
+                            style={{ padding: 36 }}
+                            color="crimson"
+                            title="Login"
+                            onPress={() => {
+                                if (username === "" || pin === "") {
+                                    Alert.alert(
+                                        "Login Error",
+                                        "You must provide both a name and a pin!",
+                                    );
+                                } else if (!/^\d{7}$/.test(pin)) {
+                                    Alert.alert(
+                                        "Login Error",
+                                        "Your pin is a 7-digit number!",
+                                    );
+                                } else {
+                                    props
+                                        .handleLogin(username, pin)
+                                        .then(() => {
+                                            setUsername("");
+                                            setPin("");
+                                        });
+                                }
+                            }}
+                        />
+                        <Button
+                            color="grey"
+                            title="Signup"
+                            onPress={() => props.setIsRegistering(true)}
+                        />
+                    </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 }
 
@@ -67,6 +87,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
+    scrollContentStyle: {
+        flexGrow: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+
     input: {
         width: "70%",
         height: 40,
