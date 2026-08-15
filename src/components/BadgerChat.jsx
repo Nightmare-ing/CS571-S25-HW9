@@ -55,9 +55,43 @@ export default function App() {
         }
     }
 
-    function handleSignup(username, pin) {
-        // hmm... maybe this is helpful!
-        setIsLoggedIn(true); // I should really do a fetch to register first!
+    async function handleSignup(username, pin) {
+        const data = await fetch("https://cs571.org/rest/s25/hw9/register", {
+            method: "POST",
+            headers: {
+                "X-CS571-ID": CS571.getBadgerId(),
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username: username,
+                pin: pin,
+            }),
+        }).then((res) => {
+            if (res.status === 200) {
+                Alert.alert("Register", "Sign up successfully!");
+                return res.json();
+            }
+            if (res.status === 409) {
+                Alert.alert("Register Error", "The user already exists!");
+                return null;
+            }
+            if (res.status === 413) {
+                Alert.alert(
+                    "Register Error",
+                    "'Username' must be 64 characters or fewer!",
+                );
+                return null;
+            }
+        });
+
+        if (data) {
+            try {
+                await SecureStore.setItemAsync(username, data.token);
+                setIsLoggedIn(true); // I should really do a fetch to register first!
+            } catch (e) {
+                Alert.alert("Internal Error", e);
+            }
+        }
     }
 
     if (isLoggedIn) {
