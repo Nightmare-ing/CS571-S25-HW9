@@ -18,8 +18,15 @@ export default function App() {
     const [chatrooms, setChatrooms] = useState([]);
 
     useEffect(() => {
-        // hmm... maybe I should load the chatroom names here
-        setChatrooms(["Hello", "World"]); // for example purposes only!
+        fetch("https://cs571.org/rest/s25/hw6/chatrooms", {
+            headers: {
+                "X-CS571-ID": CS571.getBadgerId(),
+            },
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                setChatrooms(data);
+            });
     }, []);
 
     async function handleLogin(username, pin) {
