@@ -31,16 +31,28 @@ function BadgerChatroomScreen(props) {
     return (
         <View style={styles.container}>
             {msgs ? (
-                <FlatList
-                    style={{ flex: 1, alignSelf: "stretch" }}
-                    data={msgs}
-                    refreshing={isLoading}
-                    onRefresh={fetchNewData}
-                    keyExtractor={(item) => item.id}
-                    renderItem={(renderObj) => (
-                        <BadgerChatMessage {...renderObj.item} />
-                    )}
-                />
+                <View style={{ flex: 1, alignSelf: "stretch" }}>
+                    <FlatList
+                        style={{
+                            flex: 1,
+                            paddingHorizontal: "3%",
+                        }}
+                        data={msgs}
+                        refreshing={isLoading}
+                        onRefresh={fetchNewData}
+                        keyExtractor={(item) => item.id}
+                        renderItem={(renderObj) => (
+                            <BadgerChatMessage {...renderObj.item} />
+                        )}
+                    />
+                    <Button
+                        color="crimson"
+                        title="ADD POST"
+                        onPress={() => {
+                            setModalVisable(true);
+                        }}
+                    />
+                </View>
             ) : (
                 <Text style={{ fontSize: 24, fontWeight: "bold" }}>
                     Loading...
@@ -52,7 +64,6 @@ function BadgerChatroomScreen(props) {
 
 const styles = StyleSheet.create({
     container: {
-        paddingHorizontal: "3%",
         flex: 1,
         backgroundColor: "#fff",
         justifyContent: "center",
