@@ -1,11 +1,20 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import {
+    StyleSheet,
+    Text,
+    View,
+    FlatList,
+    Modal,
+    Button,
+    Alert,
+} from "react-native";
 import CS571 from "@cs571/mobile-client";
 import BadgerChatMessage from "../helper/BadgerChatMessage";
 
 function BadgerChatroomScreen(props) {
     const [msgs, setMsgs] = useState(undefined);
     const [isLoading, setIsLoading] = useState(false);
+    const [modalVisiable, setModalVisable] = useState(false);
 
     function fetchNewData() {
         setIsLoading(true);
@@ -58,6 +67,21 @@ function BadgerChatroomScreen(props) {
                     Loading...
                 </Text>
             )}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisiable}
+                onRequestClose={() => {
+                    Alert.alert("Modal has been closed");
+                    setModalVisable(false);
+                }}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={{ padding: 45 }}>This is a modal</Text>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 }
@@ -68,6 +92,17 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         justifyContent: "center",
         alignItems: "center",
+    },
+    centeredView: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+    modalView: {
+        margin: 20,
+        borderRadius: 20,
+        backgroundColor: "white",
     },
 });
 
