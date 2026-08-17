@@ -10,11 +10,15 @@ import {
 } from "react-native";
 import CS571 from "@cs571/mobile-client";
 import BadgerChatMessage from "../helper/BadgerChatMessage";
+import { TextInput } from "react-native-gesture-handler";
 
 function BadgerChatroomScreen(props) {
     const [msgs, setMsgs] = useState(undefined);
     const [isLoading, setIsLoading] = useState(false);
     const [modalVisiable, setModalVisable] = useState(false);
+
+    const [modalTitle, setModalTitle] = useState("");
+    const [modalBody, setModalBody] = useState("");
 
     function fetchNewData() {
         setIsLoading(true);
@@ -78,7 +82,32 @@ function BadgerChatroomScreen(props) {
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style={{ padding: 45 }}>This is a modal</Text>
+                        <Text
+                            style={{
+                                fontSize: 20,
+                                paddingBottom: 12,
+                            }}
+                        >
+                            Create A Post
+                        </Text>
+                        <Text style={styles.postLabel}>Title</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={modalTitle}
+                            onChange={setModalTitle}
+                        />
+                        <Text>Body</Text>
+                        <TextInput
+                            style={[styles.input, { height: 60 }]}
+                            multiline={true}
+                            textAlignVertical="top"
+                            value={modalBody}
+                            onChange={setModalBody}
+                        />
+                        <View style={styles.postButtons}>
+                            <Button color="crimson" title="CREATE POST" />
+                            <Button color="darkgray" title="CANCEL" />
+                        </View>
                     </View>
                 </View>
             </Modal>
@@ -100,9 +129,24 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
     modalView: {
-        margin: 20,
+        width: "80%",
         borderRadius: 20,
         backgroundColor: "white",
+        padding: 24,
+    },
+    input: {
+        borderWidth: 1,
+        margin: 12,
+        padding: 10,
+    },
+    postLabel: {
+        fontSize: 16,
+    },
+    postButtons: {
+        paddingTop: 24,
+        paddingHorizontal: "10%",
+        flexDirection: "row",
+        justifyContent: "space-between",
     },
 });
 
