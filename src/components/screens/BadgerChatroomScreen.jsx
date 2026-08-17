@@ -7,6 +7,7 @@ import {
     Modal,
     Button,
     Alert,
+    Pressable,
 } from "react-native";
 import CS571 from "@cs571/mobile-client";
 import BadgerChatMessage from "../helper/BadgerChatMessage";
@@ -19,6 +20,7 @@ function BadgerChatroomScreen(props) {
 
     const [modalTitle, setModalTitle] = useState("");
     const [modalBody, setModalBody] = useState("");
+    const hasTitleAndBody = modalTitle !== "" && modalBody !== "";
 
     function fetchNewData() {
         setIsLoading(true);
@@ -94,7 +96,7 @@ function BadgerChatroomScreen(props) {
                         <TextInput
                             style={styles.input}
                             value={modalTitle}
-                            onChange={setModalTitle}
+                            onChangeText={setModalTitle}
                         />
                         <Text>Body</Text>
                         <TextInput
@@ -102,11 +104,53 @@ function BadgerChatroomScreen(props) {
                             multiline={true}
                             textAlignVertical="top"
                             value={modalBody}
-                            onChange={setModalBody}
+                            onChangeText={setModalBody}
                         />
                         <View style={styles.postButtons}>
-                            <Button color="crimson" title="CREATE POST" />
-                            <Button color="darkgray" title="CANCEL" />
+                            <Pressable
+                                style={[
+                                    styles.buttonContainer,
+                                    {
+                                        backgroundColor: hasTitleAndBody
+                                            ? "crimson"
+                                            : "whitesmoke",
+                                        elevation: hasTitleAndBody ? 6 : 0,
+                                    },
+                                ]}
+                                disabled={!hasTitleAndBody}
+                                onPress={() => {
+                                    console.log(modalTitle, modalBody);
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        color: hasTitleAndBody
+                                            ? "white"
+                                            : "darkgray",
+                                        fontWeight: "bold",
+                                    }}
+                                >
+                                    CREATE POST
+                                </Text>
+                            </Pressable>
+                            <Pressable
+                                style={[
+                                    styles.buttonContainer,
+                                    { backgroundColor: "darkgray" },
+                                ]}
+                                onPress={() => {
+                                    setModalVisable(false);
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        color: "white",
+                                        fontWeight: "bold",
+                                    }}
+                                >
+                                    CANCEL
+                                </Text>
+                            </Pressable>
                         </View>
                     </View>
                 </View>
@@ -143,10 +187,22 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     postButtons: {
-        paddingTop: 24,
-        paddingHorizontal: "10%",
         flexDirection: "row",
         justifyContent: "space-between",
+        paddingHorizontal: "2%",
+    },
+    buttonContainer: {
+        borderRadius: 2,
+        alignItems: "center",
+        justifyContent: "center",
+        shadowColor: "black",
+        shadowOffset: { width: 0, height: 4 },
+        elevation: 6,
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+    },
+    buttonText: {
+        fontWeight: "bold",
     },
 });
 
