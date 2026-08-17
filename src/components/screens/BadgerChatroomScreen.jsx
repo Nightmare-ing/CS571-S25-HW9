@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
     StyleSheet,
     Text,
@@ -13,8 +13,10 @@ import CS571 from "@cs571/mobile-client";
 import BadgerChatMessage from "../helper/BadgerChatMessage";
 import { TextInput } from "react-native-gesture-handler";
 import * as SecureStore from "expo-secure-store";
+import BadgerLoginStatusContext from "../contexts/BadgerLoginStatusContext";
 
 function BadgerChatroomScreen(props) {
+    const { loginStatus } = useContext(BadgerLoginStatusContext);
     const [msgs, setMsgs] = useState(undefined);
     const [isLoading, setIsLoading] = useState(false);
     const [modalVisiable, setModalVisable] = useState(false);
@@ -39,6 +41,10 @@ function BadgerChatroomScreen(props) {
                 setIsLoading(false);
             });
     }
+
+    useEffect(() => {
+        fetchNewData();
+    }, []);
 
     async function post() {
         const token = await SecureStore.getItemAsync("token");
@@ -77,9 +83,25 @@ function BadgerChatroomScreen(props) {
         });
     }
 
-    useEffect(() => {
-        fetchNewData();
-    }, []);
+    async function deletePost(postId) {
+        const token = await SecureStore.getItemAsync("token");
+        fetch(`https://cs571.org/rest/s25/hw9/messages?id=${postId}`, {
+            method: "DELETE",
+            headers: {
+                "X-CS571-ID": CS571.getBadgerId(),
+                Authorization: `Bearer ${token}`,
+            },
+        }).then((res) => {
+            if (res.status === 200) {
+                Alert.alert("Successfully deleted the post!");
+                fetchNewData();
+            } else if (res.status === 401) {
+                Alert.alert("Error", "You must be logged in to do that!");
+            } else {
+                Alert.alert("Error", "Internal Error!");
+            }
+        });
+    }
 
     return (
         <View style={styles.container}>
@@ -95,11 +117,15 @@ function BadgerChatroomScreen(props) {
                         onRefresh={fetchNewData}
                         keyExtractor={(item) => item.id}
                         renderItem={(renderObj) => (
-                            <BadgerChatMessage {...renderObj.item} />
+                            <BadgerChatMessage
+                                {...renderObj.item}
+                                username={loginStatus.username}
+                                deletePost={deletePost}
+                            />
                         )}
                     />
                     <Button
-                        color="crimson"
+                        color="darkred"
                         title="ADD POST"
                         onPress={() => {
                             setModalVisable(true);
@@ -153,7 +179,7 @@ function BadgerChatroomScreen(props) {
                                     styles.buttonContainer,
                                     {
                                         backgroundColor: hasTitleAndBody
-                                            ? "crimson"
+                                            ? "darkred"
                                             : "whitesmoke",
                                         elevation: hasTitleAndBody ? 6 : 0,
                                     },

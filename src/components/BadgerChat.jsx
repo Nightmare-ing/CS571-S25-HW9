@@ -9,13 +9,18 @@ import BadgerChatroomScreen from "./screens/BadgerChatroomScreen";
 import BadgerRegisterScreen from "./screens/BadgerRegisterScreen";
 import BadgerLoginScreen from "./screens/BadgerLoginScreen";
 import BadgerLandingScreen from "./screens/BadgerLandingScreen";
+import BadgerLoginStatusContext from "./contexts/BadgerLoginStatusContext";
 
 const ChatDrawer = createDrawerNavigator();
 
 export default function App() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isRegistering, setIsRegistering] = useState(false);
     const [chatrooms, setChatrooms] = useState([]);
+
+    const [loginStatus, setLoginStatus] = useState({
+        username: "",
+        isLoggedIn: false,
+    });
 
     useEffect(() => {
         fetch("https://cs571.org/rest/s25/hw6/chatrooms", {
@@ -55,7 +60,7 @@ export default function App() {
         if (data) {
             try {
                 await SecureStore.setItemAsync("token", data.token);
-                setIsLoggedIn(true); // I should really do a fetch to login first!
+                setLoginStatus({ username: username, isLoggedIn: true });
             } catch (e) {
                 Alert.alert("Internal Error", e);
             }
@@ -94,32 +99,39 @@ export default function App() {
         if (data) {
             try {
                 await SecureStore.setItemAsync("token", data.token);
-                setIsLoggedIn(true); // I should really do a fetch to register first!
+                setLoginStatus({ username: username, isLoggedIn: true });
             } catch (e) {
                 Alert.alert("Internal Error", e);
             }
         }
     }
 
-    if (isLoggedIn) {
+    if (loginStatus.isLoggedIn) {
         return (
-            <NavigationContainer>
-                <ChatDrawer.Navigator>
-                    <ChatDrawer.Screen
-                        name="Landing"
-                        component={BadgerLandingScreen}
-                    />
-                    {chatrooms.map((chatroom) => {
-                        return (
-                            <ChatDrawer.Screen key={chatroom} name={chatroom}>
-                                {(props) => (
-                                    <BadgerChatroomScreen name={chatroom} />
-                                )}
-                            </ChatDrawer.Screen>
-                        );
-                    })}
-                </ChatDrawer.Navigator>
-            </NavigationContainer>
+            <BadgerLoginStatusContext.Provider
+                value={{ loginStatus, setLoginStatus }}
+            >
+                <NavigationContainer>
+                    <ChatDrawer.Navigator>
+                        <ChatDrawer.Screen
+                            name="Landing"
+                            component={BadgerLandingScreen}
+                        />
+                        {chatrooms.map((chatroom) => {
+                            return (
+                                <ChatDrawer.Screen
+                                    key={chatroom}
+                                    name={chatroom}
+                                >
+                                    {(props) => (
+                                        <BadgerChatroomScreen name={chatroom} />
+                                    )}
+                                </ChatDrawer.Screen>
+                            );
+                        })}
+                    </ChatDrawer.Navigator>
+                </NavigationContainer>
+            </BadgerLoginStatusContext.Provider>
         );
     } else if (isRegistering) {
         return (

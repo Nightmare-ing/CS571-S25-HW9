@@ -60,7 +60,7 @@ function BadgerRegisterScreen(props) {
 
                     <View style={styles.buttons}>
                         <Button
-                            color="crimson"
+                            color="darkred"
                             title="Signup"
                             onPress={() => {
                                 if (username === "" || pin === "") {

@@ -45,7 +45,7 @@ function BadgerLoginScreen(props) {
                     <View style={styles.buttons}>
                         <Button
                             style={{ padding: 36 }}
-                            color="crimson"
+                            color="darkred"
                             title="Login"
                             onPress={() => {
                                 if (username === "" || pin === "") {
