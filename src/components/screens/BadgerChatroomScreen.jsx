@@ -73,10 +73,12 @@ function BadgerChatroomScreen(props) {
                     Loading...
                 </Text>
             )}
+
             <Modal
                 animationType="slide"
                 transparent={true}
                 visible={modalVisiable}
+                hardwareAccelerated={true}
                 onRequestClose={() => {
                     Alert.alert("Modal has been closed");
                     setModalVisable(false);
