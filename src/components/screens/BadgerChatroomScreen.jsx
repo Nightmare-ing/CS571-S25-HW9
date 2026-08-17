@@ -88,6 +88,7 @@ function BadgerChatroomScreen(props) {
                             style={{
                                 fontSize: 20,
                                 paddingBottom: 12,
+                                fontWeight: "bold",
                             }}
                         >
                             Create A Post
