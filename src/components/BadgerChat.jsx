@@ -54,7 +54,7 @@ export default function App() {
         });
         if (data) {
             try {
-                await SecureStore.setItemAsync(username, data.token);
+                await SecureStore.setItemAsync("token", data.token);
                 setIsLoggedIn(true); // I should really do a fetch to login first!
             } catch (e) {
                 Alert.alert("Internal Error", e);
@@ -93,7 +93,7 @@ export default function App() {
 
         if (data) {
             try {
-                await SecureStore.setItemAsync(username, data.token);
+                await SecureStore.setItemAsync("token", data.token);
                 setIsLoggedIn(true); // I should really do a fetch to register first!
             } catch (e) {
                 Alert.alert("Internal Error", e);

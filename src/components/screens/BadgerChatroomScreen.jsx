@@ -12,6 +12,7 @@ import {
 import CS571 from "@cs571/mobile-client";
 import BadgerChatMessage from "../helper/BadgerChatMessage";
 import { TextInput } from "react-native-gesture-handler";
+import * as SecureStore from "expo-secure-store";
 
 function BadgerChatroomScreen(props) {
     const [msgs, setMsgs] = useState(undefined);
@@ -37,6 +38,43 @@ function BadgerChatroomScreen(props) {
                 setMsgs(data.messages);
                 setIsLoading(false);
             });
+    }
+
+    async function post() {
+        const token = await SecureStore.getItemAsync("token");
+
+        fetch(
+            `https://cs571.org/rest/s25/hw9/messages?chatroom=${props.name}`,
+            {
+                method: "POST",
+                headers: {
+                    "X-CS571-ID": CS571.getBadgerId(),
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    title: modalTitle,
+                    content: modalBody,
+                }),
+            },
+        ).then((res) => {
+            if (res.status === 200) {
+                Alert.alert("Success", "Posted Successfully!");
+                setModalTitle("");
+                setModalBody("");
+                setModalVisable(false);
+                fetchNewData();
+            } else if (res.status === 401) {
+                Alert.alert("Error", "You must be logged in to do that!");
+            } else if (res.status === 413) {
+                Alert.alert(
+                    "Error",
+                    "'title' must be within 128 characters and 'content' must be within 1024 characters",
+                );
+            } else {
+                Alert.alert("Error", "Internal Error!");
+            }
+        });
     }
 
     useEffect(() => {
@@ -122,7 +160,7 @@ function BadgerChatroomScreen(props) {
                                 ]}
                                 disabled={!hasTitleAndBody}
                                 onPress={() => {
-                                    console.log(modalTitle, modalBody);
+                                    post();
                                 }}
                             >
                                 <Text
