@@ -107,9 +107,12 @@ export default function App() {
             try {
                 await SecureStore.setItemAsync("token", data.token);
                 setLoginStatus({ username: username, isLoggedIn: true });
+                return "success";
             } catch (e) {
                 Alert.alert("Internal Error", e);
             }
+        } else {
+            return "failure";
         }
     }
 

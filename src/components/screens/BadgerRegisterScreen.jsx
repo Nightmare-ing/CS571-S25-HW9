@@ -78,10 +78,12 @@ function BadgerRegisterScreen(props) {
                                 } else {
                                     props
                                         .handleSignup(username, pin)
-                                        .then(() => {
-                                            setUsername("");
-                                            setPin("");
-                                            setConfirmedPin("");
+                                        .then((result) => {
+                                            if (result === "success") {
+                                                setUsername("");
+                                                setPin("");
+                                                setConfirmedPin("");
+                                            }
                                         });
                                 }
                             }}
