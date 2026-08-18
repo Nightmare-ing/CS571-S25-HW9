@@ -60,9 +60,13 @@ function BadgerLoginScreen(props) {
                                 } else {
                                     props
                                         .handleLogin(username, pin)
-                                        .then(() => {
-                                            setUsername("");
-                                            setPin("");
+                                        .then((result) => {
+                                            if (result === "success") {
+                                                setUsername("");
+                                                setPin("");
+                                            } else {
+                                                setPin("");
+                                            }
                                         });
                                 }
                             }}
