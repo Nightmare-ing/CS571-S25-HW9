@@ -42,9 +42,8 @@ function BadgerLoginScreen(props) {
                         secureTextEntry={true}
                         onChangeText={setPin}
                     />
-                    <View style={styles.buttons}>
+                    <View style={styles.loginSignupButtons}>
                         <Button
-                            style={{ padding: 36 }}
                             color="darkred"
                             title="Login"
                             onPress={() => {
@@ -74,6 +73,13 @@ function BadgerLoginScreen(props) {
                             onPress={() => props.setIsRegistering(true)}
                         />
                     </View>
+                    <Button
+                        color="gray"
+                        title="CONTINUE AS GUEST"
+                        onPress={() => {
+                            props.handleGuest();
+                        }}
+                    />
                 </ScrollView>
             </KeyboardAvoidingView>
         </SafeAreaView>
@@ -105,9 +111,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
     },
-    buttons: {
+    loginSignupButtons: {
         width: "70%",
-        paddingTop: 24,
+        paddingVertical: 24,
         paddingHorizontal: "10%",
         flexDirection: "row",
         justifyContent: "space-between",

@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import {
+    createDrawerNavigator,
+    DrawerContentScrollView,
+    DrawerItemList,
+    DrawerItem,
+} from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 
 import CS571 from "@cs571/mobile-client";
@@ -21,6 +26,7 @@ export default function App() {
     const [loginStatus, setLoginStatus] = useState({
         username: "",
         isLoggedIn: false,
+        isGuest: false,
     });
 
     useEffect(() => {
@@ -107,13 +113,33 @@ export default function App() {
         }
     }
 
-    if (loginStatus.isLoggedIn) {
+    function customDrawerContent(props) {
+        return (
+            <DrawerContentScrollView {...props}>
+                <DrawerItemList {...props} />
+                {!loginStatus.isLoggedIn && (
+                    <DrawerItem
+                        label="Login"
+                        onPress={() =>
+                            setLoginStatus({
+                                username: "",
+                                isLoggedIn: false,
+                                isGuest: false,
+                            })
+                        }
+                    />
+                )}
+            </DrawerContentScrollView>
+        );
+    }
+
+    if (loginStatus.isLoggedIn || loginStatus.isGuest) {
         return (
             <BadgerLoginStatusContext.Provider
                 value={{ loginStatus, setLoginStatus }}
             >
                 <NavigationContainer>
-                    <ChatDrawer.Navigator>
+                    <ChatDrawer.Navigator drawerContent={customDrawerContent}>
                         <ChatDrawer.Screen
                             name="Landing"
                             component={BadgerLandingScreen}
@@ -130,18 +156,20 @@ export default function App() {
                                 </ChatDrawer.Screen>
                             );
                         })}
-                        <ChatDrawer.Screen
-                            name="Logout"
-                            component={BadgerLogoutScreen}
-                            initialParams={{
-                                handleLogout: () => {
-                                    setLoginStatus({
-                                        username: "",
-                                        isLoggedIn: false,
-                                    });
-                                },
-                            }}
-                        />
+                        {loginStatus.isLoggedIn && (
+                            <ChatDrawer.Screen
+                                name="Logout"
+                                component={BadgerLogoutScreen}
+                                initialParams={{
+                                    handleLogout: () => {
+                                        setLoginStatus({
+                                            username: "",
+                                            isLoggedIn: false,
+                                        });
+                                    },
+                                }}
+                            />
+                        )}
                     </ChatDrawer.Navigator>
                 </NavigationContainer>
             </BadgerLoginStatusContext.Provider>
@@ -158,6 +186,13 @@ export default function App() {
             <BadgerLoginScreen
                 handleLogin={handleLogin}
                 setIsRegistering={setIsRegistering}
+                handleGuest={() => {
+                    setLoginStatus({
+                        username: "",
+                        isLoggedIn: false,
+                        isGuest: true,
+                    });
+                }}
             />
         );
     }
