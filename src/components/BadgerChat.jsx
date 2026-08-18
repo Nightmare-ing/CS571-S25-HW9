@@ -10,6 +10,7 @@ import BadgerRegisterScreen from "./screens/BadgerRegisterScreen";
 import BadgerLoginScreen from "./screens/BadgerLoginScreen";
 import BadgerLandingScreen from "./screens/BadgerLandingScreen";
 import BadgerLoginStatusContext from "./contexts/BadgerLoginStatusContext";
+import BadgerLogoutScreen from "./screens/BadgerLogoutScreen";
 
 const ChatDrawer = createDrawerNavigator();
 
@@ -129,6 +130,18 @@ export default function App() {
                                 </ChatDrawer.Screen>
                             );
                         })}
+                        <ChatDrawer.Screen
+                            name="Logout"
+                            component={BadgerLogoutScreen}
+                            initialParams={{
+                                handleLogout: () => {
+                                    setLoginStatus({
+                                        username: "",
+                                        isLoggedIn: false,
+                                    });
+                                },
+                            }}
+                        />
                     </ChatDrawer.Navigator>
                 </NavigationContainer>
             </BadgerLoginStatusContext.Provider>
